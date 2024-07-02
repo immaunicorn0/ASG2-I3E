@@ -3,11 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+
 public class MainMenu : MonoBehaviour
 {
+    public GameObject optionsPanel;
+    public GameObject creditsPanel;
+    public GameObject howToPlayPanel;
+
     public void PlayGame()
     {
-        SceneManager.LoadScene("CrashSite"); 
+        SceneManager.LoadScene("CrashSite");
     }
 
     public void QuitGame()
@@ -17,16 +22,21 @@ public class MainMenu : MonoBehaviour
 
     public void ShowOptions()
     {
-        // Implement options menu
+        optionsPanel.SetActive(true);
     }
 
     public void ShowCredits()
     {
-        // Implement credits menu
+        creditsPanel.SetActive(true);
     }
 
     public void ShowHowToPlay()
     {
-        // Implement how-to-play menu
+        howToPlayPanel.SetActive(true);
+    }
+
+    public void BackToMainMenu(GameObject panel)
+    {
+        panel.SetActive(false);
     }
 }

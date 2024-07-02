@@ -1,37 +1,111 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager instance;
-    public int totalCollectibles = 5;
-    public int collectedItems = 0;
+    public GameObject deathUI;
+    public GameObject pauseMenuUI;
+    public GameObject settingsMenuUI;
+    public GameObject mainMenuUI;
 
-    void Awake()
+    private bool isPaused = false;
+
+    void Start()
     {
-        if (instance == null)
+        // Check the initial state of deathUI and set the cursor state accordingly
+        if (deathUI.activeSelf)
         {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
+            SetCursorState(false);
         }
         else
         {
-            Destroy(gameObject);
+            SetCursorState(true);
         }
     }
 
-    public void CollectItem()
+    void Update()
     {
-        collectedItems++;
-        if (collectedItems == totalCollectibles)
+        // Pause the game and show the pause menu when the escape key is pressed
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            // Unlock final area
+            if (isPaused)
+            {
+                ResumeGame();
+            }
+            else
+            {
+                PauseGame();
+            }
         }
     }
 
-    public void PlayerDied()
+    public void ShowDeathUI()
     {
-        // Show death UI
+        deathUI.SetActive(true);
+        SetCursorState(false);
+        Time.timeScale = 0f;
+    }
+
+    public void HideDeathUI()
+    {
+        deathUI.SetActive(false);
+        SetCursorState(true);
+        Time.timeScale = 1f;
+    }
+
+    public void PauseGame()
+    {
+        pauseMenuUI.SetActive(true);
+        SetCursorState(false);
+        Time.timeScale = 0f;
+        isPaused = true;
+    }
+
+    public void ResumeGame()
+    {
+        pauseMenuUI.SetActive(false);
+        SetCursorState(true);
+        Time.timeScale = 1f;
+        isPaused = false;
+    }
+
+    public void ShowMainMenu()
+    {
+        mainMenuUI.SetActive(true);
+        SetCursorState(true);
+        Time.timeScale = 0f;
+    }
+
+    public void HideMainMenu()
+    {
+        mainMenuUI.SetActive(false);
+        SetCursorState(true);
+        Time.timeScale = 1f;
+    }
+
+    public void SetCursorState(bool isCursorLocked)
+    {
+        Cursor.lockState = isCursorLocked ? CursorLockMode.Locked : CursorLockMode.None;
+        Cursor.visible = !isCursorLocked;
+    }
+
+    public void RestartGame()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        SetCursorState(true);
+    }
+
+    public void QuitToMainMenu()
+    {
+        HideDeathUI();
+        SceneManager.LoadScene("MainMenu");
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 }
